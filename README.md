@@ -1,339 +1,405 @@
-# 🏋️ FitLife Gym Management System
+# FitLife Gym Management System 🏋️‍♂️
 
-A full-stack MERN (MongoDB, Express, React, Node.js) application for managing gym memberships, payments, and user profiles with **Razorpay payment integration** for the Indian market.
+> A modern, full-stack gym management application built with the MERN stack, featuring integrated payment processing through Razorpay for the Indian market.
 
-## ✨ Features
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/Express-4.x-lightgrey)](https://expressjs.com/)
+[![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org/)
+[![Node](https://img.shields.io/badge/Node-18+-brightgreen)](https://nodejs.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-### 🔐 Authentication & Authorization
-- User registration and login with JWT authentication
-- Secure password hashing with bcrypt
-- Protected routes and API endpoints
+## 📖 About
 
-### 💳 Payment Integration (Razorpay)
-- Multiple payment methods: UPI, Cards, NetBanking, Wallets
-- Real-time payment verification with signature validation
-- Payment history tracking
-- Support for Indian Rupees (INR)
+FitLife is a comprehensive gym management solution that streamlines membership management, payment processing, and user engagement. Built with modern web technologies, it offers a seamless experience for both gym administrators and members.
 
-### 📊 Membership Management
-- Three membership tiers: Basic, Premium, VIP
-- Automated membership activation after payment
-- Membership status tracking and expiry dates
-- Personal training sessions and class bookings
+### Why FitLife?
 
-### 👤 User Dashboard
-- View active membership details
-- Payment history
-- Profile management
-- Real-time updates with Socket.io
+- **Payment Integration**: Native support for Razorpay with UPI, cards, net banking, and wallet payments
+- **Real-time Updates**: Live notifications and updates using Socket.io
+- **Containerized Deployment**: Production-ready Docker setup for easy deployment
+- **Modern Architecture**: Clean, maintainable code following industry best practices
+- **Mobile Responsive**: Works perfectly on all devices
 
-### 🎨 Modern UI/UX
-- Responsive design with mobile support
-- Interactive animations and transitions
-- Toast notifications for user feedback
-- Modern gradient designs
+## ✨ Key Features
 
-## 🛠️ Tech Stack
+### For Members
+- 🔐 Secure authentication with JWT tokens
+- 💳 Multiple payment options (UPI, Cards, Net Banking, Wallets)
+- 📊 View membership status and payment history
+- �� Manage personal profile and preferences
+- 🔔 Real-time notifications
 
-### Frontend
-- **React 18** - UI library
-- **Vite** - Build tool and dev server
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
-- **Socket.io Client** - Real-time communication
-- **React Icons** - Icon library
-- **React Toastify** - Notification system
+### For Administrators
+- 📈 Track memberships and payments
+- 👥 Manage user accounts
+- 💰 Monitor revenue and transactions
+- 🎯 Flexible membership tier management
 
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - ODM for MongoDB
-- **JWT** - Authentication
-- **Razorpay** - Payment gateway
-- **Socket.io** - Real-time features
-- **bcryptjs** - Password hashing
+### Technical Highlights
+- **Secure Payments**: Razorpay integration with signature verification
+- **Real-time Communication**: Socket.io for instant updates
+- **Responsive Design**: Beautiful UI that works on any screen size
+- **Containerized**: Docker and Docker Compose for easy deployment
+- **Production Ready**: Environment-based configuration
 
-### DevOps
-- **Docker** - Containerization
-- **Docker Compose** - Multi-container orchestration
-- **Nginx** - Reverse proxy and static file serving
+## 🚀 Getting Started
 
-## 📋 Prerequisites
+### Prerequisites
 
-- **Node.js** 18+ and npm
-- **MongoDB** 7.0+ (or use Docker)
-- **Docker** and **Docker Compose** (for containerized deployment)
-- **Razorpay Account** (for payment processing)
+Before you begin, ensure you have:
+- Node.js (v18 or higher)
+- MongoDB (v7.0 or higher) or Docker
+- A Razorpay account ([Sign up here](https://dashboard.razorpay.com/signup))
 
-## 🚀 Quick Start
+### Installation
 
-### Option 1: Using Docker (Recommended)
+#### Quick Start with Docker (Recommended)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Amitabha01/Full_Stack_GYM_Application.git
-   cd Full_Stack_GYM_Application
-   ```
+The fastest way to get FitLife running is using Docker:
 
-2. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your actual values (MongoDB, JWT secret, Razorpay keys)
-   ```
-
-3. **Start all services**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Access the application**
-   - Frontend: http://localhost:80
-   - Backend API: http://localhost:5000
-   - MongoDB: localhost:27017
-
-5. **View logs**
-   ```bash
-   docker-compose logs -f
-   ```
-
-6. **Stop services**
-   ```bash
-   docker-compose down
-   ```
-
-### Option 2: Manual Setup
-
-#### Backend Setup
-
-1. **Navigate to backend directory**
-   ```bash
-   cd backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   Create `.env` file:
-   ```env
-   PORT=5000
-   NODE_ENV=development
-   MONGODB_URI=mongodb://localhost:27017/fitlife-gym
-   JWT_SECRET=your-super-secret-jwt-key
-   JWT_EXPIRE=7d
-   RAZORPAY_KEY_ID=rzp_test_xxxxx
-   RAZORPAY_KEY_SECRET=your_secret_key
-   ```
-
-4. **Start the backend server**
-   ```bash
-   npm start
-   ```
-
-   Backend will run on http://localhost:5000
-
-#### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   Create `.env` file:
-   ```env
-   VITE_API_URL=http://localhost:5000
-   VITE_RAZORPAY_KEY_ID=rzp_test_xxxxx
-   ```
-
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-   Frontend will run on http://localhost:3000
-
-## 🔑 Razorpay Configuration
-
-### Get Razorpay API Keys
-
-1. Sign up at [Razorpay Dashboard](https://dashboard.razorpay.com/signup)
-2. Navigate to **Settings** → **API Keys**
-3. Generate **Test Keys** for development
-4. Copy **Key ID** and **Key Secret**
-
-### Test Payment Credentials
-
-**Test Card**
-- Card Number: `4111 1111 1111 1111`
-- CVV: Any 3 digits (e.g., `123`)
-- Expiry: Any future date (e.g., `12/25`)
-
-**Test UPI**
-- UPI ID: `success@razorpay`
-
-For complete setup instructions, see [RAZORPAY_SETUP_GUIDE.md](./RAZORPAY_SETUP_GUIDE.md)
-
-## 🐳 Docker Commands
-
-### Build and Run
 ```bash
-# Build all services
-docker-compose build
+# Clone the repository
+git clone https://github.com/Amitabha01/Full_Stack_GYM_Application.git
+cd Full_Stack_GYM_Application
+
+# Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your MongoDB URI, JWT secret, and Razorpay keys
 
 # Start all services
 docker-compose up -d
 
 # View logs
 docker-compose logs -f
+```
+
+That's it! The application will be available at:
+- **Frontend**: http://localhost:80
+- **Backend API**: http://localhost:5000
+- **MongoDB**: localhost:27017
+
+#### Manual Setup
+
+If you prefer to run without Docker:
+
+**Backend Setup**
+
+```bash
+cd backend
+npm install
+
+# Create .env file with your configuration
+cp .env.example .env
+
+# Start the server
+npm start
+```
+
+**Frontend Setup**
+
+```bash
+cd frontend
+npm install
+
+# Create .env file
+cp .env.example .env
+
+# Start the dev server
+npm run dev
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Backend (.env)**
+```env
+NODE_ENV=development
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/fitlife-gym
+JWT_SECRET=your-secret-key-here
+JWT_EXPIRE=7d
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxx
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+```
+
+**Frontend (.env)**
+```env
+VITE_API_URL=http://localhost:5000
+VITE_RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxx
+```
+
+### Razorpay Setup
+
+1. Create an account at [Razorpay Dashboard](https://dashboard.razorpay.com/signup)
+2. Navigate to Settings → API Keys
+3. Generate test keys for development
+4. Add the keys to your `.env` files
+
+**Test Payment Details:**
+- **Card**: 4111 1111 1111 1111
+- **CVV**: Any 3 digits
+- **Expiry**: Any future date
+- **UPI ID**: success@razorpay
+
+For detailed Razorpay integration guide, see [RAZORPAY_SETUP_GUIDE.md](./RAZORPAY_SETUP_GUIDE.md)
+
+## 🏗️ Tech Stack
+
+### Frontend
+- **React 18** - Modern UI library
+- **Vite** - Lightning-fast build tool
+- **React Router** - Client-side routing
+- **Axios** - Promise-based HTTP client
+- **Socket.io Client** - Real-time features
+- **React Toastify** - Beautiful notifications
+
+### Backend
+- **Node.js & Express** - Server framework
+- **MongoDB & Mongoose** - Database and ODM
+- **JWT** - Secure authentication
+- **Razorpay SDK** - Payment processing
+- **Socket.io** - WebSocket communication
+- **bcryptjs** - Password encryption
+
+### DevOps
+- **Docker & Docker Compose** - Containerization
+- **Nginx** - Production web server
+- **MongoDB** - Database container
+
+## 📂 Project Structure
+
+```
+Full_Stack_GYM_Application/
+│
+├── backend/                  # Node.js backend
+│   ├── config/              # Configuration files
+│   ├── controllers/         # Business logic
+│   ├── models/              # Database models
+│   ├── routes/              # API routes
+│   ├── middleware/          # Custom middleware
+│   ├── utils/               # Utility functions
+│   ├── Dockerfile           # Backend container config
+│   └── server.js            # Entry point
+│
+├── frontend/                # React frontend
+│   ├── src/
+│   │   ├── components/      # Reusable components
+│   │   ├── pages/           # Page components
+│   │   ├── context/         # React context
+│   │   └── App.jsx          # Root component
+│   ├── Dockerfile           # Frontend container config
+│   └── nginx.conf           # Nginx configuration
+│
+├── docker-compose.yml       # Multi-container setup
+└── .env.example             # Environment template
+```
+
+## 🎯 Membership Plans
+
+| Plan | Price | Duration | Benefits |
+|------|-------|----------|----------|
+| **Basic** | ₹999 | 1 month | 3 classes/week, 24/7 gym access, Group fitness classes |
+| **Premium** | ₹4,999 | 6 months | 5 classes/week, All Basic features, 2 PT sessions, Nutrition consultation |
+| **VIP** | ₹8,999 | 12 months | Unlimited classes, All Premium features, 8 PT sessions, Spa access, Priority booking |
+
+## 🔌 API Documentation
+
+### Authentication Endpoints
+
+```
+POST   /api/auth/register    # Create new user account
+POST   /api/auth/login        # User login
+GET    /api/auth/me           # Get current user (protected)
+```
+
+### Membership Endpoints
+
+```
+GET    /api/memberships       # List all membership plans
+POST   /api/memberships/seed  # Initialize default plans
+```
+
+### Payment Endpoints
+
+```
+POST   /api/payments/create-intent    # Create Razorpay order (protected)
+POST   /api/payments/confirm          # Verify payment (protected)
+GET    /api/payments/history          # User payment history (protected)
+POST   /api/payments/webhook          # Razorpay webhooks
+```
+
+## 🐳 Docker Commands
+
+```bash
+# Build images
+docker-compose build
+
+# Start services in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f [service-name]
 
 # Stop services
+docker-compose stop
+
+# Remove containers
 docker-compose down
 
 # Remove containers and volumes
 docker-compose down -v
+
+# Rebuild and restart
+docker-compose up -d --build
 ```
 
-### Database Management
+## 🛠️ Development
+
+### Running in Development Mode
+
+**Backend:**
 ```bash
-# Access MongoDB shell
-docker exec -it fitlife-mongodb mongosh -u admin -p password123
-
-# Backup database
-docker exec fitlife-mongodb mongodump --uri="mongodb://admin:password123@localhost:27017/fitlife-gym?authSource=admin" --out=/backup
+cd backend
+npm run dev  # Uses nodemon for auto-reload
 ```
 
-## 📁 Project Structure
-
-```
-Full_Stack_GYM_Application/
-├── backend/
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── membershipController.js
-│   │   └── paymentController.js
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── Membership.js
-│   │   └── Payment.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── memberships.js
-│   │   └── payments.js
-│   ├── Dockerfile
-│   └── server.js
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── App.jsx
-│   ├── Dockerfile
-│   └── nginx.conf
-├── docker-compose.yml
-├── .env.example
-└── README.md
+**Frontend:**
+```bash
+cd frontend
+npm run dev  # Vite dev server with HMR
 ```
 
-## 🧪 API Endpoints
+### Building for Production
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user (protected)
+**Frontend:**
+```bash
+cd frontend
+npm run build
+npm run preview  # Preview production build locally
+```
 
-### Memberships
-- `GET /api/memberships` - Get all membership plans
-- `POST /api/memberships/seed` - Seed default memberships
+## 🧪 Testing
 
-### Payments
-- `POST /api/payments/create-intent` - Create Razorpay order (protected)
-- `POST /api/payments/confirm` - Verify payment signature (protected)
-- `GET /api/payments/history` - Get payment history (protected)
+```bash
+# Run backend tests
+cd backend
+npm test
 
-## 🎯 Membership Tiers
-
-| Tier | Price | Duration | Features |
-|------|-------|----------|----------|
-| **Basic** | ₹999 | 1 month | 3 classes/week, 24/7 access, Group classes |
-| **Premium** | ₹4,999 | 6 months | 5 classes/week, 24/7 access, Group classes, 2 PT sessions, Nutrition guide |
-| **VIP** | ₹8,999 | 12 months | Unlimited classes, 24/7 access, All classes, 8 PT sessions, Nutrition guide, Spa access |
-
-## 🔒 Environment Variables
-
-### Backend Variables
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment mode | `development` or `production` |
-| `PORT` | Backend server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/fitlife-gym` |
-| `JWT_SECRET` | Secret key for JWT | `your-super-secret-key` |
-| `RAZORPAY_KEY_ID` | Razorpay Key ID | `rzp_test_xxxxx` |
-| `RAZORPAY_KEY_SECRET` | Razorpay Key Secret | `your_secret` |
-
-### Frontend Variables
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend API URL | `http://localhost:5000` |
-| `VITE_RAZORPAY_KEY_ID` | Razorpay Key ID (public) | `rzp_test_xxxxx` |
+# Run frontend tests
+cd frontend
+npm test
+```
 
 ## 🚨 Troubleshooting
 
-**Port already in use**
+### Common Issues
+
+**Port Already in Use**
 ```bash
+# Kill process on port 5000 (backend)
 lsof -ti:5000 | xargs kill -9
+
+# Kill process on port 3000 (frontend)
 lsof -ti:3000 | xargs kill -9
 ```
 
-**MongoDB connection failed**
-- Ensure MongoDB is running
-- Check MONGODB_URI in .env
+**MongoDB Connection Issues**
+- Ensure MongoDB is running: `sudo systemctl status mongod`
+- Check connection string in `.env`
+- Verify network connectivity
 
-**Payment not working**
-- Add real Razorpay keys to .env
-- Check Razorpay dashboard for test mode
+**Payment Integration Issues**
+- Verify Razorpay keys are correct
+- Check if using test mode keys in development
+- Review Razorpay dashboard for payment status
 
-**Docker issues**
+**Docker Issues**
 ```bash
+# View container logs
 docker-compose logs backend
+
+# Restart specific service
+docker-compose restart backend
+
+# Rebuild containers
 docker-compose up --build
-docker-compose down -v
 ```
+
+## 🔐 Security
+
+- JWT tokens for secure authentication
+- Password hashing with bcrypt (10 salt rounds)
+- Environment-based configuration
+- Razorpay signature verification for payments
+- Protected API routes with middleware
+- CORS configuration for cross-origin requests
+
+## 🚀 Deployment
+
+### Docker Deployment
+
+The application includes production-ready Docker configurations:
+
+```bash
+# Production deployment
+docker-compose -f docker-compose.yml up -d
+```
+
+### Manual Deployment
+
+1. Set `NODE_ENV=production` in backend `.env`
+2. Update `MONGODB_URI` to production database
+3. Use strong `JWT_SECRET`
+4. Configure Razorpay live keys
+5. Build frontend: `npm run build`
+6. Deploy using your preferred hosting service
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## 👤 Author
 
 **Amitabha**
+
 - GitHub: [@Amitabha01](https://github.com/Amitabha01)
-- Repository: [Full_Stack_GYM_Application](https://github.com/Amitabha01/Full_Stack_GYM_Application)
+- Project: [FitLife Gym Application](https://github.com/Amitabha01/Full_Stack_GYM_Application)
+
+## 🙏 Acknowledgments
+
+- [MongoDB](https://www.mongodb.com/) for the powerful database
+- [Razorpay](https://razorpay.com/) for seamless payment integration
+- [React](https://reactjs.org/) for the amazing frontend library
+- [Express](https://expressjs.com/) for the robust backend framework
+- The open-source community for inspiration and support
 
 ## 📞 Support
 
-For support and queries:
-- 📧 Open an issue on GitHub
-- 📖 Check [RAZORPAY_SETUP_GUIDE.md](./RAZORPAY_SETUP_GUIDE.md)
-- 🌐 Visit [Razorpay Documentation](https://razorpay.com/docs/)
+Need help? Here's how to get support:
+
+- 📖 Check the [Razorpay Setup Guide](./RAZORPAY_SETUP_GUIDE.md)
+- 🐛 Open an [Issue](https://github.com/Amitabha01/Full_Stack_GYM_Application/issues)
+- 💬 Start a [Discussion](https://github.com/Amitabha01/Full_Stack_GYM_Application/discussions)
+- 📧 Contact via GitHub
 
 ---
 
-**Made with ❤️ for the fitness community** 🏋️‍♂️
+<div align="center">
+
+**Made with ❤️ for fitness enthusiasts**
+
+⭐ Star this repo if you find it helpful!
+
+</div>
