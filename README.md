@@ -1,459 +1,339 @@
-# 🏋️ FitLife Gym - Full Stack MERN Application
+# 🏋️ FitLife Gym Management System
 
-[![Tests](https://img.shields.io/badge/tests-implemented-brightgreen)]()
-[![Coverage](https://img.shields.io/badge/coverage-50%25+-green)]()
-[![License](https://img.shields.io/badge/license-MIT-blue)]()
+A full-stack MERN (MongoDB, Express, React, Node.js) application for managing gym memberships, payments, and user profiles with **Razorpay payment integration** for the Indian market.
 
-> A comprehensive gym management and fitness tracking application built with the MERN stack, featuring real-time updates, AI-powered recommendations, social features, gamification, and extensive testing.
+## ✨ Features
 
-## � Features
+### 🔐 Authentication & Authorization
+- User registration and login with JWT authentication
+- Secure password hashing with bcrypt
+- Protected routes and API endpoints
 
-### Member Features
-- **User Authentication**: Secure JWT-based authentication with role-based access control (member/trainer/admin)
-- **Class Booking**: Browse and book fitness classes with real-time availability
-- **Workout Tracking**: Log workouts with exercises, sets, reps, and calories burned
-- **Nutrition Plans**: Access personalized nutrition plans created by trainers
-- **Progress Tracking**: Monitor fitness goals and member progress over time
-- **Membership Management**: View and manage membership plans (Basic, Premium, VIP)
-- **Trainer Profiles**: Browse trainer specializations, ratings, and book sessions
+### 💳 Payment Integration (Razorpay)
+- Multiple payment methods: UPI, Cards, NetBanking, Wallets
+- Real-time payment verification with signature validation
+- Payment history tracking
+- Support for Indian Rupees (INR)
 
-### Advanced Features
-- 🤖 **AI Workout Recommendations** - Personalized workout suggestions based on user profile and goals
-- 👥 **Social Feed** - Share progress, like and comment on posts, follow other members
-- 🏆 **Challenges & Competitions** - Join challenges, compete on leaderboards
-- 📈 **Advanced Analytics** - Comprehensive charts and statistics with Recharts
-- 🎥 **Video Tutorials** - Access exercise demonstration videos
-- 🔔 **Real-time Notifications** - Socket.io powered live updates
-- 🎮 **Gamification** - Earn points, badges, and level up through achievements
+### 📊 Membership Management
+- Three membership tiers: Basic, Premium, VIP
+- Automated membership activation after payment
+- Membership status tracking and expiry dates
+- Personal training sessions and class bookings
 
-### UI/UX Features
-- 🌓 **Dark Mode** - Professional dark theme with smooth transitions and custom effects
-- 📱 **Responsive Design** - Mobile-first design that works on all devices
-- ✨ **Modern Animations** - Smooth gradients, hover effects, glow animations
-- 🎨 **Custom Scrollbar** - Styled scrollbars matching the theme
-- 💫 **Advanced Effects** - Glass-morphism, 3D transforms, gradient shifts
+### 👤 User Dashboard
+- View active membership details
+- Payment history
+- Profile management
+- Real-time updates with Socket.io
 
-### Trainer Features
-- **Class Management**: Create and manage fitness classes
-- **Member Progress**: Track and update member progress
-- **Nutrition Planning**: Create custom nutrition plans for members
-- **Workout Templates**: Create workout templates for members
+### 🎨 Modern UI/UX
+- Responsive design with mobile support
+- Interactive animations and transitions
+- Toast notifications for user feedback
+- Modern gradient designs
 
-### Admin Features
-- **Dashboard Analytics**: View gym statistics and metrics
-- **Membership Plans**: Create and manage membership tiers
-- **User Management**: Manage members, trainers, and their access
-
-## 🚀 Tech Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 - **React 18** - UI library
-- **React Router 6** - Client-side routing
-- **Vite 7** - Build tool and dev server with HMR
+- **Vite** - Build tool and dev server
+- **React Router** - Client-side routing
 - **Axios** - HTTP client
-- **Recharts** - Data visualization and analytics charts
 - **Socket.io Client** - Real-time communication
-- **React Icons** - Comprehensive icon library
-- **React Toastify** - Toast notifications
+- **React Icons** - Icon library
+- **React Toastify** - Notification system
 
 ### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
 - **MongoDB** - NoSQL database
 - **Mongoose** - ODM for MongoDB
-- **Socket.io** - Real-time engine for live updates
-- **JWT** - JSON Web Token authentication
-- **Bcrypt** - Secure password hashing
-- **Stripe** - Payment processing integration
+- **JWT** - Authentication
+- **Razorpay** - Payment gateway
+- **Socket.io** - Real-time features
+- **bcryptjs** - Password hashing
 
-### Testing & Quality Assurance
-- **Jest** - Backend testing framework
-- **Supertest** - HTTP assertion library for API testing
-- **Vitest** - Lightning-fast frontend testing powered by Vite
-- **React Testing Library** - Component and integration testing
-- **MongoDB Memory Server** - In-memory database for tests
-- **Babel** - JavaScript transpiler for ES modules in tests
-- **Coverage Reports** - Comprehensive test coverage tracking
-
-### DevOps & Infrastructure
+### DevOps
 - **Docker** - Containerization
 - **Docker Compose** - Multi-container orchestration
-- **Redis** - Caching layer and session storage
-- **RabbitMQ** - Message broker for async operations
-- **Nginx** - Reverse proxy and load balancing (production)
+- **Nginx** - Reverse proxy and static file serving
 
 ## 📋 Prerequisites
 
-- Node.js (v14 or higher)
-- MongoDB (v4.4 or higher)
-- npm or yarn package manager
+- **Node.js** 18+ and npm
+- **MongoDB** 7.0+ (or use Docker)
+- **Docker** and **Docker Compose** (for containerized deployment)
+- **Razorpay Account** (for payment processing)
 
-## 🔧 Installation
+## 🚀 Quick Start
 
-### 1. Clone the repository
+### Option 1: Using Docker (Recommended)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Amitabha01/Full_Stack_GYM_Application.git
+   cd Full_Stack_GYM_Application
+   ```
+
+2. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual values (MongoDB, JWT secret, Razorpay keys)
+   ```
+
+3. **Start all services**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - Frontend: http://localhost:80
+   - Backend API: http://localhost:5000
+   - MongoDB: localhost:27017
+
+5. **View logs**
+   ```bash
+   docker-compose logs -f
+   ```
+
+6. **Stop services**
+   ```bash
+   docker-compose down
+   ```
+
+### Option 2: Manual Setup
+
+#### Backend Setup
+
+1. **Navigate to backend directory**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+   Create `.env` file:
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/fitlife-gym
+   JWT_SECRET=your-super-secret-jwt-key
+   JWT_EXPIRE=7d
+   RAZORPAY_KEY_ID=rzp_test_xxxxx
+   RAZORPAY_KEY_SECRET=your_secret_key
+   ```
+
+4. **Start the backend server**
+   ```bash
+   npm start
+   ```
+
+   Backend will run on http://localhost:5000
+
+#### Frontend Setup
+
+1. **Navigate to frontend directory**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+   Create `.env` file:
+   ```env
+   VITE_API_URL=http://localhost:5000
+   VITE_RAZORPAY_KEY_ID=rzp_test_xxxxx
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+   Frontend will run on http://localhost:3000
+
+## 🔑 Razorpay Configuration
+
+### Get Razorpay API Keys
+
+1. Sign up at [Razorpay Dashboard](https://dashboard.razorpay.com/signup)
+2. Navigate to **Settings** → **API Keys**
+3. Generate **Test Keys** for development
+4. Copy **Key ID** and **Key Secret**
+
+### Test Payment Credentials
+
+**Test Card**
+- Card Number: `4111 1111 1111 1111`
+- CVV: Any 3 digits (e.g., `123`)
+- Expiry: Any future date (e.g., `12/25`)
+
+**Test UPI**
+- UPI ID: `success@razorpay`
+
+For complete setup instructions, see [RAZORPAY_SETUP_GUIDE.md](./RAZORPAY_SETUP_GUIDE.md)
+
+## 🐳 Docker Commands
+
+### Build and Run
 ```bash
-git clone <repository-url>
-cd my_fullstack_project
+# Build all services
+docker-compose build
+
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Remove containers and volumes
+docker-compose down -v
 ```
 
-### 2. Backend Setup
+### Database Management
 ```bash
-cd backend
-npm install
+# Access MongoDB shell
+docker exec -it fitlife-mongodb mongosh -u admin -p password123
+
+# Backup database
+docker exec fitlife-mongodb mongodump --uri="mongodb://admin:password123@localhost:27017/fitlife-gym?authSource=admin" --out=/backup
 ```
-
-Create a `.env` file in the backend directory:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/fitlife_gym
-JWT_SECRET=your_jwt_secret_key_here
-NODE_ENV=development
-```
-
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
-```
-
-Create a `.env` file in the frontend directory:
-```env
-VITE_API_URL=http://localhost:5000
-```
-
-## 🏃 Running the Application
-
-### Start MongoDB
-```bash
-# On Linux/Mac
-sudo systemctl start mongod
-
-# Or using brew (Mac)
-brew services start mongodb-community
-
-# Or run directly
-mongod
-```
-
-### Start Backend Server
-```bash
-cd backend
-npm run dev
-```
-The backend server will run on `http://localhost:5000`
-
-### Start Frontend Development Server
-```bash
-cd frontend
-npm run dev
-```
-The frontend will run on `http://localhost:3002`
-
-## 🧪 Testing
-
-### Why Testing Matters
-This project includes comprehensive testing to ensure:
-- ✅ Code quality and reliability
-- ✅ Catch bugs before production
-- ✅ Safe refactoring and feature additions
-- ✅ Documentation through test examples
-- ✅ Confidence for recruiters and hiring managers
-
-### Backend Testing
-
-**Run all backend tests:**
-```bash
-cd backend
-npm test
-```
-
-**Watch mode (for TDD):**
-```bash
-npm run test:watch
-```
-
-**Generate coverage report:**
-```bash
-npm run test:coverage
-```
-
-Coverage report will be available at: `backend/coverage/index.html`
-
-**Test Structure:**
-- `__tests__/models/` - Unit tests for Mongoose models
-- `__tests__/api/` - Integration tests for API endpoints
-- `__tests__/helpers.js` - Test utilities and mock data
-- `__tests__/setup.js` - Global test configuration
-
-**Example Backend Tests:**
-- ✅ User model validation and password hashing
-- ✅ Authentication endpoints (register, login, token validation)
-- ✅ Workout CRUD operations
-- ✅ Class booking system
-- ✅ Role-based access control
-- ✅ Error handling and edge cases
-
-### Frontend Testing
-
-**Run all frontend tests:**
-```bash
-cd frontend
-npm test
-```
-
-**Watch mode:**
-```bash
-npm run test:watch
-```
-
-**Interactive UI:**
-```bash
-npm run test:ui
-```
-
-**Generate coverage:**
-```bash
-npm run test:coverage
-```
-
-Coverage report will be available at: `frontend/coverage/index.html`
-
-**Test Structure:**
-- `src/__tests__/components/` - Component tests
-- `src/__tests__/pages/` - Page/route tests
-- `src/__tests__/utils.jsx` - Test utilities and custom renderers
-- `src/__tests__/setup.js` - Global test setup
-
-**Example Frontend Tests:**
-- ✅ Navbar rendering for authenticated/unauthenticated users
-- ✅ Login form validation and submission
-- ✅ Dark mode toggle functionality
-- ✅ Protected route access control
-- ✅ Component props and user interactions
-
-### Test Coverage Goals
-
-| Category | Target | Current Status |
-|----------|--------|----------------|
-| Backend Models | 80%+ | ✅ Implemented |
-| Backend API | 70%+ | ✅ Implemented |
-| Frontend Components | 60%+ | ✅ Implemented |
-| Frontend Pages | 60%+ | ✅ Implemented |
-| Overall | 50%+ | ✅ Achieved |
-
-### Testing Best Practices Used
-
-1. **Isolation** - Tests don't depend on each other
-2. **In-Memory Database** - Fast, isolated backend tests
-3. **Mock Data** - Consistent test fixtures
-4. **Cleanup** - Proper teardown after each test
-5. **Descriptive Names** - Clear test descriptions
-6. **Arrange-Act-Assert** - Structured test patterns
-7. **Coverage Reports** - Track untested code
 
 ## 📁 Project Structure
 
 ```
-my_fullstack_project/
+Full_Stack_GYM_Application/
 ├── backend/
-│   ├── config/
-│   │   └── db.js                 # Database configuration
 │   ├── controllers/
-│   │   ├── authController.js     # Authentication logic
-│   │   ├── taskController.js     # Class management (transformed)
-│   │   ├── bookingController.js  # Booking management
-│   │   ├── workoutController.js  # Workout tracking
-│   │   └── membershipController.js # Membership plans
-│   ├── middleware/
-│   │   ├── auth.js              # JWT verification
-│   │   └── validation.js        # Request validation
+│   │   ├── authController.js
+│   │   ├── membershipController.js
+│   │   └── paymentController.js
 │   ├── models/
-│   │   ├── User.js              # User/Member/Trainer schema
-│   │   ├── Class.js             # Fitness class schema
-│   │   ├── Booking.js           # Class booking schema
-│   │   ├── Workout.js           # Workout log schema
-│   │   ├── NutritionPlan.js     # Nutrition plan schema
-│   │   ├── Membership.js        # Membership plan schema
-│   │   └── MemberProgress.js    # Progress tracking schema
+│   │   ├── User.js
+│   │   ├── Membership.js
+│   │   └── Payment.js
 │   ├── routes/
-│   │   ├── auth.js              # Auth routes
-│   │   ├── tasks.js             # Class routes (transformed)
-│   │   ├── bookings.js          # Booking routes
-│   │   ├── workouts.js          # Workout routes
-│   │   └── memberships.js       # Membership routes
-│   ├── .env                     # Environment variables
-│   ├── package.json
-│   └── server.js                # Express app entry point
-│
-└── frontend/
-    ├── public/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Navbar.jsx       # Navigation component
-    │   │   └── PrivateRoute.jsx # Protected route wrapper
-    │   ├── pages/
-    │   │   ├── Home.jsx         # Landing page
-    │   │   ├── Home.css
-    │   │   ├── Classes.jsx      # Class browsing & booking
-    │   │   ├── Classes.css
-    │   │   ├── Memberships.jsx  # Membership plans
-    │   │   ├── Memberships.css
-    │   │   ├── Trainers.jsx     # Trainer profiles
-    │   │   ├── Trainers.css
-    │   │   ├── WorkoutTracker.jsx # Workout logging
-    │   │   ├── WorkoutTracker.css
-    │   │   ├── Dashboard.jsx    # User dashboard
-    │   │   ├── Profile.jsx      # User profile
-    │   │   ├── Login.jsx        # Login page
-    │   │   └── Register.jsx     # Registration page
-    │   ├── App.jsx              # Main app component
-    │   ├── App.css              # Global styles
-    │   └── main.jsx             # React entry point
-    ├── .env                     # Environment variables
-    ├── package.json
-    └── vite.config.js           # Vite configuration
+│   │   ├── auth.js
+│   │   ├── memberships.js
+│   │   └── payments.js
+│   ├── Dockerfile
+│   └── server.js
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── App.jsx
+│   ├── Dockerfile
+│   └── nginx.conf
+├── docker-compose.yml
+├── .env.example
+└── README.md
 ```
 
-## 🔌 API Endpoints
+## 🧪 API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-
-### Classes
-- `GET /api/classes` - Get all classes (with filters)
-- `GET /api/classes/:id` - Get single class
-- `POST /api/classes` - Create class (trainer/admin)
-- `PUT /api/classes/:id` - Update class (trainer/admin)
-- `DELETE /api/classes/:id` - Delete class (admin)
-
-### Bookings
-- `GET /api/bookings` - Get user bookings
-- `GET /api/bookings/stats` - Get booking statistics
-- `POST /api/bookings` - Book a class
-- `PUT /api/bookings/:id` - Update booking
-- `DELETE /api/bookings/:id` - Cancel booking
-
-### Workouts
-- `GET /api/workouts` - Get user workouts
-- `GET /api/workouts/stats` - Get workout statistics
-- `POST /api/workouts` - Log a workout
-- `PUT /api/workouts/:id` - Update workout
-- `DELETE /api/workouts/:id` - Delete workout
+- `GET /api/auth/me` - Get current user (protected)
 
 ### Memberships
 - `GET /api/memberships` - Get all membership plans
-- `GET /api/memberships/:id` - Get single plan
-- `POST /api/memberships` - Create plan (admin)
-- `PUT /api/memberships/:id` - Update plan (admin)
-- `DELETE /api/memberships/:id` - Delete plan (admin)
+- `POST /api/memberships/seed` - Seed default memberships
 
-## 🎨 Features Breakdown
+### Payments
+- `POST /api/payments/create-intent` - Create Razorpay order (protected)
+- `POST /api/payments/confirm` - Verify payment signature (protected)
+- `GET /api/payments/history` - Get payment history (protected)
 
-### Class Management
-- Filter by category (Cardio, Strength, Yoga, Pilates, Dance, etc.)
-- Filter by difficulty (Beginner, Intermediate, Advanced)
-- Real-time capacity tracking
-- Class scheduling with time slots
-- Trainer assignment
+## 🎯 Membership Tiers
 
-### Workout Tracking
-- Log exercise details (sets, reps, weight)
-- Track workout duration and calories
-- Categorize by workout type
-- Progress statistics and charts
-- Feeling/energy level tracking
+| Tier | Price | Duration | Features |
+|------|-------|----------|----------|
+| **Basic** | ₹999 | 1 month | 3 classes/week, 24/7 access, Group classes |
+| **Premium** | ₹4,999 | 6 months | 5 classes/week, 24/7 access, Group classes, 2 PT sessions, Nutrition guide |
+| **VIP** | ₹8,999 | 12 months | Unlimited classes, 24/7 access, All classes, 8 PT sessions, Nutrition guide, Spa access |
 
-### Membership System
-- Multiple tiers (Basic, Premium, VIP)
-- Feature-based pricing
-- Class and PT session limits
-- Access hours management
-- Renewal tracking
+## 🔒 Environment Variables
 
-### User Roles
-- **Member**: Book classes, log workouts, view nutrition plans
-- **Trainer**: Create classes, track member progress, create nutrition plans
-- **Admin**: Full access to all features and user management
+### Backend Variables
 
-## 🔒 Security Features
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NODE_ENV` | Environment mode | `development` or `production` |
+| `PORT` | Backend server port | `5000` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/fitlife-gym` |
+| `JWT_SECRET` | Secret key for JWT | `your-super-secret-key` |
+| `RAZORPAY_KEY_ID` | Razorpay Key ID | `rzp_test_xxxxx` |
+| `RAZORPAY_KEY_SECRET` | Razorpay Key Secret | `your_secret` |
 
-- JWT-based authentication
-- Password hashing with bcryptjs
-- Role-based authorization
-- Protected API routes
-- Input validation and sanitization
-- CORS configuration
+### Frontend Variables
 
-## 🐛 Troubleshooting
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_URL` | Backend API URL | `http://localhost:5000` |
+| `VITE_RAZORPAY_KEY_ID` | Razorpay Key ID (public) | `rzp_test_xxxxx` |
 
-### File Watcher Error (ENOSPC)
-If you encounter file watcher errors on Linux:
+## 🚨 Troubleshooting
+
+**Port already in use**
 ```bash
-echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
+lsof -ti:5000 | xargs kill -9
+lsof -ti:3000 | xargs kill -9
 ```
 
-### MongoDB Connection Error
-Ensure MongoDB is running:
+**MongoDB connection failed**
+- Ensure MongoDB is running
+- Check MONGODB_URI in .env
+
+**Payment not working**
+- Add real Razorpay keys to .env
+- Check Razorpay dashboard for test mode
+
+**Docker issues**
 ```bash
-sudo systemctl status mongod
+docker-compose logs backend
+docker-compose up --build
+docker-compose down -v
 ```
-
-### Port Already in Use
-Change the port in `.env` files or kill the process:
-```bash
-# Find process using port 5000
-lsof -ti:5000
-# Kill the process
-kill -9 <PID>
-```
-
-## 📝 Development Scripts
-
-### Backend
-- `npm run dev` - Start development server with nodemon
-- `npm start` - Start production server
-
-### Frontend
-- `npm run dev` - Start Vite dev server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-
-## 🚀 Production Deployment
-
-### Backend
-1. Set `NODE_ENV=production` in `.env`
-2. Update `MONGODB_URI` to production database
-3. Use a strong `JWT_SECRET`
-4. Deploy to platforms like Heroku, Railway, or AWS
-
-### Frontend
-1. Update `VITE_API_URL` to production backend URL
-2. Run `npm run build`
-3. Deploy `dist/` folder to Netlify, Vercel, or similar
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License.
+This project is open source and available under the [MIT License](LICENSE).
 
-## 👥 Authors
+## 👨‍💻 Author
 
-Built with ❤️ for fitness enthusiasts and gym management.
+**Amitabha**
+- GitHub: [@Amitabha01](https://github.com/Amitabha01)
+- Repository: [Full_Stack_GYM_Application](https://github.com/Amitabha01/Full_Stack_GYM_Application)
 
-## 🙏 Acknowledgments
+## 📞 Support
 
-- MongoDB documentation
-- React documentation
-- Express.js documentation
-- Vite documentation
+For support and queries:
+- 📧 Open an issue on GitHub
+- 📖 Check [RAZORPAY_SETUP_GUIDE.md](./RAZORPAY_SETUP_GUIDE.md)
+- 🌐 Visit [Razorpay Documentation](https://razorpay.com/docs/)
+
+---
+
+**Made with ❤️ for the fitness community** 🏋️‍♂️
