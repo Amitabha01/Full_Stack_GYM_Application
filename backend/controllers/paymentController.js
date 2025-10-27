@@ -1,16 +1,38 @@
-import Stripe from 'stripe';
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
 import Payment from '../models/Payment.js';
 import Membership from '../models/Membership.js';
 import User from '../models/User.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key');
+const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
+const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
 
-// Create payment intent
+if (!razorpayKeyId || razorpayKeyId === 'your_razorpay_key_id_here') {
+  console.warn('⚠️  WARNING: Razorpay API keys not configured!');
+  console.warn('📝 Please add your Razorpay API keys to .env file');
+  console.warn('🔗 Get your keys from: https://dashboard.razorpay.com/app/keys');
+}
+
+const razorpay = razorpayKeyId && razorpayKeySecret 
+  ? new Razorpay({
+      key_id: razorpayKeyId,
+      key_secret: razorpayKeySecret,
+    })
+  : null;
+
 export const createPaymentIntent = async (req, res) => {
   try {
-    const { membershipId, paymentMethodId } = req.body;
+    if (!razorpay || !razorpayKeyId || razorpayKeyId === 'your_razorpay_key_id_here') {
+      return res.status(503).json({
+        success: false,
+        message: 'Payment system not configured. Please contact administrator.',
+        error: 'Razorpay API keys not set'
+      });
+    }
 
+    const { membershipId } = req.body;
     const membership = await Membership.findById(membershipId);
+    
     if (!membership) {
       return res.status(404).json({
         success: false,
@@ -18,52 +40,28 @@ export const createPaymentIntent = async (req, res) => {
       });
     }
 
-    // Create or retrieve Stripe customer
-    let stripeCustomerId = req.user.stripeCustomerId;
-    
-    if (!stripeCustomerId) {
-      const customer = await stripe.customers.create({
-        email: req.user.email,
-        name: req.user.name,
-        metadata: {
-          userId: req.user._id.toString()
-        }
-      });
-      stripeCustomerId = customer.id;
-      
-      // Save Stripe customer ID to user
-      await User.findByIdAndUpdate(req.user._id, {
-        stripeCustomerId: customer.id
-      });
-    }
-
-    // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(membership.price * 100), // Convert to cents
-      currency: 'usd',
-      customer: stripeCustomerId,
-      payment_method: paymentMethodId,
-      confirm: paymentMethodId ? true : false,
-      automatic_payment_methods: {
-        enabled: true,
-        allow_redirects: 'never'
-      },
-      metadata: {
+    const options = {
+      amount: Math.round(membership.price * 100),
+      currency: 'INR',
+      receipt: `receipt_${Date.now()}`,
+      notes: {
         userId: req.user._id.toString(),
         membershipId: membershipId,
-        membershipName: membership.name
-      },
-      description: `${membership.name} Membership - ${membership.duration} months`
-    });
+        membershipName: membership.name,
+        userName: req.user.name,
+        userEmail: req.user.email
+      }
+    };
 
-    // Create payment record in database
+    const order = await razorpay.orders.create(options);
+
     const payment = await Payment.create({
       user: req.user._id,
       membership: membershipId,
-      stripePaymentIntentId: paymentIntent.id,
-      stripeCustomerId: stripeCustomerId,
+      razorpayOrderId: order.id,
       amount: membership.price,
-      status: paymentIntent.status === 'succeeded' ? 'succeeded' : 'pending',
+      currency: 'INR',
+      status: 'pending',
       description: `${membership.name} Membership`,
       metadata: {
         duration: membership.duration,
@@ -74,70 +72,91 @@ export const createPaymentIntent = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id,
-        payment
+        orderId: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        keyId: razorpayKeyId,
+        payment,
+        user: {
+          name: req.user.name,
+          email: req.user.email
+        }
       }
     });
   } catch (error) {
-    console.error('Payment intent creation error:', error);
+    console.error('Payment order creation error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error creating payment intent',
+      message: 'Error creating payment order',
       error: error.message
     });
   }
 };
 
-// Confirm payment
 export const confirmPayment = async (req, res) => {
   try {
-    const { paymentIntentId } = req.body;
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
 
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const body = razorpayOrderId + '|' + razorpayPaymentId;
+    const expectedSignature = crypto
+      .createHmac('sha256', razorpayKeySecret)
+      .update(body.toString())
+      .digest('hex');
 
-    if (paymentIntent.status === 'succeeded') {
-      const payment = await Payment.findOneAndUpdate(
-        { stripePaymentIntentId: paymentIntentId },
-        { status: 'succeeded' },
-        { new: true }
-      ).populate('membership');
+    const isAuthentic = expectedSignature === razorpaySignature;
 
-      // Update user membership
-      if (payment.membership) {
-        const expiryDate = new Date();
-        expiryDate.setMonth(expiryDate.getMonth() + payment.membership.duration);
-
-        await User.findByIdAndUpdate(payment.user, {
-          membershipType: payment.membership.type,
-          membershipStatus: 'active',
-          membershipExpiry: expiryDate
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        message: 'Payment confirmed successfully',
-        data: { payment }
-      });
-    } else {
-      res.status(400).json({
+    if (!isAuthentic) {
+      return res.status(400).json({
         success: false,
-        message: 'Payment not successful',
-        status: paymentIntent.status
+        message: 'Invalid payment signature'
       });
     }
+
+    const payment = await Payment.findOneAndUpdate(
+      { razorpayOrderId },
+      {
+        razorpayPaymentId,
+        razorpaySignature,
+        status: 'succeeded'
+      },
+      { new: true }
+    ).populate('membership');
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Payment record not found'
+      });
+    }
+
+    if (payment.membership) {
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + payment.membership.duration);
+
+      await User.findByIdAndUpdate(payment.user, {
+        membershipType: payment.membership.type,
+        membershipStatus: 'active',
+        membershipStartDate: startDate,
+        membershipEndDate: endDate
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Payment verified successfully',
+      data: { payment }
+    });
   } catch (error) {
-    console.error('Payment confirmation error:', error);
+    console.error('Payment verification error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error confirming payment',
+      message: 'Error verifying payment',
       error: error.message
     });
   }
 };
 
-// Get user payment history
 export const getPaymentHistory = async (req, res) => {
   try {
     const payments = await Payment.find({ user: req.user._id })
@@ -159,105 +178,57 @@ export const getPaymentHistory = async (req, res) => {
   }
 };
 
-// Stripe webhook handler
 export const handleWebhook = async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  let event;
-
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const signature = req.headers['x-razorpay-signature'];
+
+    if (webhookSecret) {
+      const body = JSON.stringify(req.body);
+      const expectedSignature = crypto
+        .createHmac('sha256', webhookSecret)
+        .update(body)
+        .digest('hex');
+
+      if (signature !== expectedSignature) {
+        return res.status(400).json({ error: 'Invalid signature' });
+      }
+    }
+
+    const event = req.body.event;
+    const payload = req.body.payload;
+
+    switch (event) {
+      case 'payment.captured':
+        await Payment.findOneAndUpdate(
+          { razorpayPaymentId: payload.payment.entity.id },
+          { status: 'succeeded' }
+        );
+        break;
+
+      case 'payment.failed':
+        await Payment.findOneAndUpdate(
+          { razorpayOrderId: payload.payment.entity.order_id },
+          { status: 'failed' }
+        );
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event}`);
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Webhook error:', error);
+    res.status(500).json({ error: 'Webhook handler failed' });
   }
-
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object;
-      await Payment.findOneAndUpdate(
-        { stripePaymentIntentId: paymentIntent.id },
-        { status: 'succeeded' }
-      );
-      break;
-
-    case 'payment_intent.payment_failed':
-      const failedIntent = event.data.object;
-      await Payment.findOneAndUpdate(
-        { stripePaymentIntentId: failedIntent.id },
-        { status: 'failed' }
-      );
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  res.json({ received: true });
 };
 
-// Create subscription (for recurring payments)
 export const createSubscription = async (req, res) => {
   try {
-    const { membershipId, paymentMethodId } = req.body;
-
-    const membership = await Membership.findById(membershipId);
-    if (!membership) {
-      return res.status(404).json({
-        success: false,
-        message: 'Membership plan not found'
-      });
-    }
-
-    // Create or retrieve Stripe customer
-    let stripeCustomerId = req.user.stripeCustomerId;
-    
-    if (!stripeCustomerId) {
-      const customer = await stripe.customers.create({
-        email: req.user.email,
-        name: req.user.name,
-        payment_method: paymentMethodId,
-        invoice_settings: {
-          default_payment_method: paymentMethodId
-        }
-      });
-      stripeCustomerId = customer.id;
-      
-      await User.findByIdAndUpdate(req.user._id, {
-        stripeCustomerId: customer.id
-      });
-    }
-
-    // Create a price if not exists
-    const price = await stripe.prices.create({
-      unit_amount: Math.round(membership.price * 100),
-      currency: 'usd',
-      recurring: { interval: 'month', interval_count: membership.duration },
-      product_data: {
-        name: `${membership.name} Membership`,
-        description: membership.description
-      }
-    });
-
-    // Create subscription
-    const subscription = await stripe.subscriptions.create({
-      customer: stripeCustomerId,
-      items: [{ price: price.id }],
-      payment_settings: {
-        payment_method_types: ['card'],
-        save_default_payment_method: 'on_subscription'
-      },
-      expand: ['latest_invoice.payment_intent']
-    });
-
-    res.status(200).json({
-      success: true,
-      data: {
-        subscriptionId: subscription.id,
-        clientSecret: subscription.latest_invoice.payment_intent.client_secret
-      }
+    res.status(501).json({
+      success: false,
+      message: 'Subscriptions not yet implemented with Razorpay'
     });
   } catch (error) {
     console.error('Subscription creation error:', error);
